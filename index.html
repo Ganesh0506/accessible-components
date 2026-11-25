@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Accessible Components, by Komal Ganesh</title>
+  <meta name="description" content="Six components in plain HTML, CSS and JavaScript that work fully by keyboard and with screen readers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Geist:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header>
+    <a class="home" href="/">Komal Ganesh</a>
+    <h1>Accessible Components</h1>
+    <p>Six components made with plain HTML, CSS and JavaScript. Every one of them works with just a keyboard.</p>
+    <button type="button" id="open-palette">Open command palette (Ctrl + K)</button>
+  </header>
+
+  <main id="main">
+
+    <!-- ========== 1. DATA TABLE ========== -->
+    <section class="box" aria-labelledby="table-heading">
+      <h2 id="table-heading" tabindex="-1">1. Data table</h2>
+      <p class="hint">Type in the box to filter the rows. Press a column heading to sort by it, and press it again to reverse the order.</p>
+
+      <label for="table-filter">Filter rows</label>
+      <input type="search" id="table-filter">
+
+      <table>
+        <caption>Team members</caption>
+        <thead>
+          <tr>
+            <th id="name-heading"><button type="button" id="sort-name">Name</button></th>
+            <th id="team-heading"><button type="button" id="sort-team">Team</button></th>
+            <th id="city-heading"><button type="button" id="sort-city">City</button></th>
+            <th id="tickets-heading"><button type="button" id="sort-tickets">Tickets closed</button></th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- Rows are added by js/table.js -->
+        </tbody>
+      </table>
+
+      <!-- Screen readers read out anything written into an aria-live area -->
+      <p id="table-status" class="sr-only" aria-live="polite"></p>
+    </section>
+
+
+    <!-- ========== 2. COMBOBOX ========== -->
+    <section class="box" aria-labelledby="combobox-heading">
+      <h2 id="combobox-heading" tabindex="-1">2. Combobox</h2>
+
+      <label for="country-input">Country</label>
+      <p id="country-hint" class="hint">Start typing, then use the up and down arrow keys to choose. Press Enter to select.</p>
+      <div class="combobox">
+        <input type="text" id="country-input" role="combobox" autocomplete="off"
+               aria-autocomplete="list" aria-expanded="false" aria-controls="country-list"
+               aria-describedby="country-hint">
+        <ul id="country-list" role="listbox" aria-label="Countries" hidden></ul>
+      </div>
+      <p id="country-result">Nothing selected yet.</p>
+    </section>
+
+
+    <!-- ========== 3. MULTI-STEP FORM ========== -->
+    <section class="box" aria-labelledby="form-heading">
+      <h2 id="form-heading" tabindex="-1">3. Multi-step form</h2>
+
+      <div id="order-form">
+        <ol>
+          <li id="progress-1" aria-current="step">Your details</li>
+          <li id="progress-2">Delivery</li>
+          <li id="progress-3">Check and send</li>
+        </ol>
+
+        <!-- Step 1 -->
+        <div id="step-1">
+          <h3 id="step-1-heading" tabindex="-1">Step 1 of 3: Your details</h3>
+
+          <label for="full-name">Full name</label>
+          <p id="full-name-error" class="error-message"></p>
+          <input type="text" id="full-name" autocomplete="name" aria-describedby="full-name-error">
+
+          <label for="email">Email address</label>
+          <p id="email-error" class="error-message"></p>
+          <input type="email" id="email" autocomplete="email" aria-describedby="email-error">
+
+          <p><button type="button" id="step-1-next">Continue</button></p>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="step-2" hidden>
+          <h3 id="step-2-heading" tabindex="-1">Step 2 of 3: Delivery</h3>
+
+          <label for="address">Address</label>
+          <p id="address-error" class="error-message"></p>
+          <input type="text" id="address" autocomplete="street-address" aria-describedby="address-error">
+
+          <fieldset aria-describedby="speed-error">
+            <legend>Delivery speed</legend>
+            <p id="speed-error" class="error-message"></p>
+            <input type="radio" id="speed-standard" name="speed" value="Standard">
+            <label for="speed-standard" class="radio-label">Standard (3 to 5 days, free)</label>
+            <br>
+            <input type="radio" id="speed-express" name="speed" value="Express">
+            <label for="speed-express" class="radio-label">Express (next day, £4.99)</label>
+          </fieldset>
+
+          <p>
+            <button type="button" id="step-2-back">Back</button>
+            <button type="button" id="step-2-next">Continue</button>
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div id="step-3" hidden>
+          <h3 id="step-3-heading" tabindex="-1">Step 3 of 3: Check and send</h3>
+          <p>Name: <span id="review-name"></span></p>
+          <p>Email: <span id="review-email"></span></p>
+          <p>Address: <span id="review-address"></span></p>
+          <p>Delivery: <span id="review-speed"></span></p>
+
+          <p>
+            <button type="button" id="step-3-back">Back</button>
+            <button type="button" id="send-order">Send order</button>
+          </p>
+        </div>
+      </div>
+
+      <div id="order-done" class="success" hidden>
+        <h3 id="order-done-heading" tabindex="-1">Order sent</h3>
+        <p>Thank you! We have received your order.</p>
+      </div>
+    </section>
+
+
+    <!-- ========== 4. FILE UPLOAD ========== -->
+    <section class="box" aria-labelledby="upload-heading">
+      <h2 id="upload-heading" tabindex="-1">4. File upload</h2>
+
+      <p id="upload-hint" class="hint">PNG, JPG or PDF files, up to 5 MB each.</p>
+      <div id="drop-zone" class="drop-zone">
+        <p>Drag files here, or</p>
+        <button type="button" id="choose-files" aria-describedby="upload-hint">Choose files</button>
+        <input type="file" id="file-input" multiple accept=".png,.jpg,.jpeg,.pdf" hidden>
+      </div>
+
+      <ul id="upload-errors" class="upload-errors"></ul>
+      <ul id="file-list" aria-label="Selected files"></ul>
+
+      <p id="upload-status" class="sr-only" aria-live="polite"></p>
+    </section>
+
+
+    <!-- ========== 5. DRAG-AND-DROP BOARD ========== -->
+    <section class="box" aria-labelledby="board-heading">
+      <h2 id="board-heading" tabindex="-1">5. Drag-and-drop board</h2>
+      <p id="board-help" class="hint">Drag cards with the mouse. With the keyboard: press Space to pick a card up, use the arrow keys to move it, then press Space again to drop it. Press Escape to cancel.</p>
+
+      <div class="board">
+        <div class="column">
+          <h3 id="todo-title">To do</h3>
+          <ul class="card-list" aria-labelledby="todo-title">
+            <li><button type="button" class="task" draggable="true" aria-describedby="board-help">Check colour contrast</button></li>
+            <li><button type="button" class="task" draggable="true" aria-describedby="board-help">Write combobox tests</button></li>
+            <li><button type="button" class="task" draggable="true" aria-describedby="board-help">Add dark mode</button></li>
+          </ul>
+        </div>
+        <div class="column">
+          <h3 id="doing-title">In progress</h3>
+          <ul class="card-list" aria-labelledby="doing-title">
+            <li><button type="button" class="task" draggable="true" aria-describedby="board-help">Keyboard support for table</button></li>
+          </ul>
+        </div>
+        <div class="column">
+          <h3 id="done-title">Done</h3>
+          <ul class="card-list" aria-labelledby="done-title">
+            <li><button type="button" class="task" draggable="true" aria-describedby="board-help">Build the page layout</button></li>
+          </ul>
+        </div>
+      </div>
+
+      <p id="board-status" class="sr-only" aria-live="assertive"></p>
+    </section>
+
+
+    <!-- ========== 6. COMMAND PALETTE ========== -->
+    <section class="box" aria-labelledby="palette-heading">
+      <h2 id="palette-heading" tabindex="-1">6. Command palette</h2>
+      <p>Press <kbd>Ctrl</kbd> + <kbd>K</kbd> anywhere on the page (or use the button at the top). Type to search, use the arrow keys to choose, press Enter to run a command and Escape to close.</p>
+    </section>
+
+  </main>
+
+  <!-- The palette itself. <dialog> gives us a real pop-up that blocks the page behind it and closes with Escape. -->
+  <dialog id="palette" aria-label="Command palette">
+    <input type="text" id="palette-input" role="combobox" autocomplete="off"
+           aria-label="Search commands" aria-expanded="true" aria-controls="palette-list"
+           aria-autocomplete="list" placeholder="Type a command...">
+    <ul id="palette-list" role="listbox" aria-label="Commands">
+      <li role="option" id="cmd-table" data-go-to="table-heading">Go to data table</li>
+      <li role="option" id="cmd-combobox" data-go-to="combobox-heading">Go to combobox</li>
+      <li role="option" id="cmd-form" data-go-to="form-heading">Go to multi-step form</li>
+      <li role="option" id="cmd-upload" data-go-to="upload-heading">Go to file upload</li>
+      <li role="option" id="cmd-board" data-go-to="board-heading">Go to drag-and-drop board</li>
+      <li role="option" id="cmd-dark">Turn dark mode on or off</li>
+      <li role="option" id="cmd-card">Add a card to the board</li>
+    </ul>
+    <p id="palette-empty" hidden>No commands found.</p>
+  </dialog>
+
+  <p id="page-status" class="sr-only" aria-live="polite"></p>
+
+  <script src="js/table.js"></script>
+  <script src="js/combobox.js"></script>
+  <script src="js/form.js"></script>
+  <script src="js/upload.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/palette.js"></script>
+</body>
+</html>
